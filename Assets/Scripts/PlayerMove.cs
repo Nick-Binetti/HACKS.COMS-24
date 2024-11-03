@@ -9,6 +9,14 @@ public class PlayerMove : MonoBehaviour
 
     public float groundDrag;
 
+    public float jumpForce;
+    public float jumpCooldown;
+    public float airMult;
+    bool canJump;
+
+    //Keybinds
+    public KeyCode jumpKey = KeyCode.Space;
+
     [Header("Ground Check")]
     public float playerHeight;
     public LayerMask ground;
@@ -60,6 +68,12 @@ public class PlayerMove : MonoBehaviour
     {
         horizontalInput = Input.GetAxisRaw("Horizontal");
         verticalInput = Input.GetAxisRaw("Vertical");
+
+        //conditions to jump
+        if(Input.GetKey(jumpKey) && canJump && grounded)
+        {
+
+        }
     }
 
     public void MovePlayer()
@@ -80,5 +94,18 @@ public class PlayerMove : MonoBehaviour
             Vector3 limitVel = flatVel.normalized * moveSpeed;
             rb.velocity = new Vector3(limitVel.x, rb.velocity.y, limitVel.z);
         }
+    }
+
+    public void Jump()
+    {
+        //reset y velocity before jump -> prevents infinite jump
+        rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
+
+        rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
+    }
+
+    public void ResetJump()
+    {
+        canJump = true;
     }
 }
